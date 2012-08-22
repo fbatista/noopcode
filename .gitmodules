@@ -1,0 +1,3 @@
+[submodule "client/relative_date"]
+	path = client/relative_date
+	url = git://github.com/jherdman/javascript-relative-time-helpers.git
