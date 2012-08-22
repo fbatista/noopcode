@@ -1,0 +1,136 @@
+<head>
+  <title>noopcode</title>
+  <script type="text/javascript" src="//use.typekit.net/ozc6bou.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div id="main" class="span8 offset2">
+				{{> post_view}}
+				{{> posts}}
+			</div>
+		</div>
+	</div>
+	{{> navigation}}
+</body>
+
+<template name="post_view">
+	{{#each post_views}}
+	<section id="{{_id}}">
+		<article>
+			<h1>{{header}}<h1>
+			{{#markdown}}{{body}}{{/markdown}}
+		</article>
+	</section>
+	{{/each}}
+</template>
+
+<template name="posts">
+	{{#if in_list_view}}
+		<section class="hero-unit" >
+			<h1>noopcode</h1>
+			<blockquote>
+				<p>noopcode is a blog about day-to-day challenges and experiments that a developer randomly encounters.</p>
+			</blockquote>
+		</section>
+		<section id="post_list">
+			{{#each posts}}
+				{{> post}}
+			{{/each}}
+		</section>
+		{{#if currentUser}}
+			{{#if currentUser.admin}}
+			<section id="create_post">
+				{{> create_post}}
+			</section>
+			{{/if}}
+		{{/if}}
+	{{/if}}
+</template>
+
+<template name="post">
+	<article>
+		<h1><a title="Click here to view more" href="#">{{header}}</a></h1>
+		{{#markdown}}{{body}}{{/markdown}}
+		<div class="navbar">
+  		<div class="navbar-inner">
+  		  <a class="brand" href="#">{{the_date}}</a>
+  		  <ul class="nav">
+  		    <li><a href="#">Comment</a></li>
+  		  </ul>
+  		</div>
+		</div>
+	</article>
+</template>
+
+<template name="create_post">
+	<div class="row">
+		<div class="span8">
+			<form id="create_post_form" class="form-horizontal">
+				<fieldset>
+					<legend>Create new post</legend>
+					<div class="control-group">
+						<label class="control-label" for="header">Header</label>
+						<div class="controls">
+							<input class="span5" type="text" name="header" id="new_post_header"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="body">Body</label>
+						<div class="controls">
+							<textarea class="span5" rows="8" name="body" id="new_post_body"></textarea>
+						</div>
+					</div>
+					<div class="form-actions">
+						<a id="create_post" href="#" class="btn btn-primary">Post</a>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</template>
+
+<template name="navigation">
+	<div id="bottom_nav" class="navbar navbar-inverse navbar-fixed-bottom">
+		<div class="navbar-inner">
+			<div class="container">
+				<ul class="nav pull-left">
+					<li><a id="brand" class="brand">noopcode</a></li>
+				</ul>
+				<ul class="nav pull-right">
+  				<li>
+  					{{> loginButtons}}
+  				</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="sign_up">
+	<a href="#" id="create">Create account</a>
+</template>
+
+<template name="sign_up_form">
+	<div id="sign_up_form">
+	<form>
+		<fieldset>
+  		<label>Username</label>
+  		<input type="text" class="span2" placeholder="Your alias">
+  		<label>Password</label>
+  		<input type="password" class="span2" placeholder="remember this!">
+  		<label>Confirm</label>
+  		<input type="password" class="span2" placeholder="just to make sure...">
+  	</fieldset>
+  	<div class="form-actions">
+  		<button type="submit" class="btn btn-inverse">Create account</button> <em>or <a id="close_signup_form" href="#">close</a></em>
+  	</div>
+	</form>
+	</div>
+</template>
+
+<template name="facebook">
+	<a href="#" id="facebook">Login with Facebook</a>
+</template>
