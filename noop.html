@@ -8,7 +8,6 @@
 	<div class="container">
 		<div class="row">
 			<div id="main" class="span8 offset2">
-				{{> post_view}}
 				{{> posts}}
 			</div>
 		</div>
@@ -16,53 +15,69 @@
 	{{> navigation}}
 </body>
 
-<template name="post_view">
-	{{#each post_views}}
-	<section id="{{_id}}">
-		<article>
-			<h1>{{header}}<h1>
-			{{#markdown}}{{body}}{{/markdown}}
-		</article>
-	</section>
-	{{/each}}
-</template>
-
 <template name="posts">
-	{{#if in_list_view}}
-		<section class="hero-unit" >
-			<h1>noopcode</h1>
-			<blockquote>
-				<p>noopcode is a blog about day-to-day challenges and experiments that a developer randomly encounters.</p>
-			</blockquote>
+	<section class="hero-unit" >
+		<h1>noopcode</h1>
+		<blockquote>
+			<p>noopcode is a blog about day-to-day challenges and experiments that a developer randomly encounters.</p>
+		</blockquote>
+	</section>
+	<section id="post_list">
+		{{#each posts}}
+			{{> post}}
+		{{/each}}
+	</section>
+	{{#if currentUser}}
+		{{#if currentUser.admin}}
+		<section id="create_post">
+			{{> create_post}}
 		</section>
-		<section id="post_list">
-			{{#each posts}}
-				{{> post}}
-			{{/each}}
-		</section>
-		{{#if currentUser}}
-			{{#if currentUser.admin}}
-			<section id="create_post">
-				{{> create_post}}
-			</section>
-			{{/if}}
 		{{/if}}
 	{{/if}}
 </template>
 
 <template name="post">
 	<article>
-		<h1><a title="Click here to view more" href="#">{{header}}</a></h1>
-		{{#markdown}}{{body}}{{/markdown}}
-		<div class="navbar">
-  		<div class="navbar-inner">
-  		  <a class="brand" href="#">{{the_date}}</a>
-  		  <ul class="nav">
-  		    <li><a href="#">Comment</a></li>
-  		  </ul>
-  		</div>
+		<div class="header_wrap">
+			<div class="article_header navbar">
+				<div class="navbar-inner">
+					<div class="container">
+  					<ul class="nav pull-left">
+  						<li><a class="brand" title="Click here to view more" href="#"><strong>{{header}}</strong></a></li>
+  					</ul>
+  			  	<ul class="nav pull-right">
+  			  		<li><a href="#"><small>Posted {{time_ago_in_words created_at}}</small></a></li>
+  			    	<li class="dropdown">
+  			    		<a href="#" class="dropdown-toggle add-comment" data-toggle="dropdown"><i class="icon-comment"></i></a>
+  			    		<ul class="dropdown-menu">
+  			    			<li><textarea name="comment_body" rows="5" class="input-xlarge"></textarea></li>
+  			    			<li class="centered-text"><small>&#9166; = <em>submit;</em> &#8679; + &#9166; = <em>new line;</em></small></li>
+  			    		</ul>
+  			    	</li>
+  			    	<li><a href="#">{{votes}}</a></li>
+  			    	<li><a class="thumbs_up" href="#"><i class="icon-thumbs-up"></i></a></li>
+  			    	<li><a class="thumbs_down" href="#"><i class="icon-thumbs-down"></i></a></li>
+  			  	</ul>
+  				</div>
+  			</div>
+			</div>
+		</div>
+		<div class="article_and_comments">
+			<div class="article_body">
+				{{#markdown}}{{body}}{{/markdown}}
+			</div>
+			{{#each comments}}
+				{{> comment}}
+			{{/each}}
 		</div>
 	</article>
+</template>
+
+<template name="comment">
+	<div class="comment">
+		{{#markdown}}{{body}}{{/markdown}}
+		<h5>~ {{user}} <small>{{time_ago_in_words created_at}}</small></h5>
+	</div>
 </template>
 
 <template name="create_post">
