@@ -1,6 +1,6 @@
 <head>
-  <title>noopcode</title>
-  <script type="text/javascript" src="//use.typekit.net/ozc6bou.js"></script>
+	<title>noopcode</title>
+	<script type="text/javascript" src="//use.typekit.net/ozc6bou.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 
@@ -16,12 +16,17 @@
 </body>
 
 <template name="posts">
+	{{#unless post_selected}}
 	<section class="hero-unit" >
 		<h1>noopcode</h1>
 		<blockquote>
 			<p>noopcode is a blog about day-to-day challenges and experiments that a developer randomly encounters.</p>
 		</blockquote>
+		{{#constant}}<iframe allowtransparency="true" frameborder="0" scrolling="no"
+  src="//platform.twitter.com/widgets/follow_button.html?screen_name=fbatista"
+  style="width:300px; height:20px;"></iframe>{{/constant}}
 	</section>
+	{{/unless}}
 	<section id="post_list">
 		{{#each posts}}
 			{{> post}}
@@ -29,24 +34,39 @@
 	</section>
 	{{#if currentUser}}
 		{{#if currentUser.admin}}
-		<section id="create_post">
-			{{> create_post}}
-		</section>
+			<section id="create_post">
+				{{> create_post}}
+			</section>
 		{{/if}}
 	{{/if}}
 </template>
 
 <template name="post">
-	<article>
+	<article id="{{_id}}">
 		<div class="header_wrap">
-			<div class="article_header navbar">
+			<div class="article_header navbar {{isCurrent}}">
 				<div class="navbar-inner">
 					<div class="container">
   					<ul class="nav pull-left">
-  						<li><a class="brand" title="Click here to view more" href="#"><strong>{{header}}</strong></a></li>
+  						<li><a class="brand" title="Click here to view more" href="{{link}}"><strong>{{#unless post_selected}}<i class="icon icon-resize-full"></i>{{/unless}} {{header}}</strong></a></li>
+  						{{#if post_selected}}
+  							{{#constant}}
+  							<li><em><iframe allowtransparency="true" frameborder="0" scrolling="no"
+        src="https://platform.twitter.com/widgets/tweet_button.html?via=fbatista&related=fbatista"
+        style="width:130px; height:20px;"></iframe></em></li>
+        					{{/constant}}
+        				{{/if}}
   					</ul>
   			  	<ul class="nav pull-right">
-  			  		<li><a href="#"><small>Posted {{time_ago_in_words created_at}}</small></a></li>
+  			  		<li><em>Posted {{time_ago_in_words created_at}}</em></li>
+  			    	<li>
+  			    		<span class="votes_container">
+  			    			<span class="votes_count">{{votes}}</span>
+  			    			<span class="votes_controls">
+  			    				<a class="thumbs_up" href="#"><i class="icon-thumbs-up"></i></a><a class="thumbs_down" href="#"><i class="icon-thumbs-down"></i></a>
+  			    			</span>
+  			    		</span>
+  			    	</li>
   			    	<li class="dropdown">
   			    		<a href="#" class="dropdown-toggle add-comment" data-toggle="dropdown"><i class="icon-comment"></i></a>
   			    		<ul class="dropdown-menu">
@@ -54,9 +74,6 @@
   			    			<li class="centered-text"><small>&#9166; = <em>submit;</em> &#8679; + &#9166; = <em>new line;</em></small></li>
   			    		</ul>
   			    	</li>
-  			    	<li><a href="#">{{votes}}</a></li>
-  			    	<li><a class="thumbs_up" href="#"><i class="icon-thumbs-up"></i></a></li>
-  			    	<li><a class="thumbs_down" href="#"><i class="icon-thumbs-down"></i></a></li>
   			  	</ul>
   				</div>
   			</div>
@@ -64,11 +81,22 @@
 		</div>
 		<div class="article_and_comments">
 			<div class="article_body">
-				{{#markdown}}{{body}}{{/markdown}}
+				{{#markdown}}
+					{{#if post_selected}}
+						{{safeBody}}
+					{{else}}
+						{{bodyPreview}} <a href="#" class="brand">&hellip; <i class="icon icon-resize-full"></i></a>
+					{{/if}}
+				{{/markdown}}
 			</div>
-			{{#each comments}}
-				{{> comment}}
-			{{/each}}
+			<div class="comments well">
+				<h4>Comments</h4>
+				{{#each comments}}
+					{{> comment}}
+				{{else}}
+					<p>No comments yet.</p>
+				{{/each}}
+			</div>
 		</div>
 	</article>
 </template>
@@ -76,7 +104,7 @@
 <template name="comment">
 	<div class="comment">
 		{{#markdown}}{{body}}{{/markdown}}
-		<h5>~ {{user}} <small>{{time_ago_in_words created_at}}</small></h5>
+		<h5>~ {{#if user}}{{user}}{{else}}Anonymous{{/if}} <small>{{time_ago_in_words created_at}}</small></h5>
 	</div>
 </template>
 
@@ -112,40 +140,14 @@
 		<div class="navbar-inner">
 			<div class="container">
 				<ul class="nav pull-left">
-					<li><a id="brand" class="brand">noopcode</a></li>
+					<li><a id="brand" href="#" class="brand {{#if post_selected}}white{{/if}}">noopcode</a></li>
 				</ul>
 				<ul class="nav pull-right">
   				<li>
-  					{{> loginButtons}}
+  					{{loginButtons align="right"}}
   				</li>
 				</ul>
 			</div>
 		</div>
 	</div>
-</template>
-
-<template name="sign_up">
-	<a href="#" id="create">Create account</a>
-</template>
-
-<template name="sign_up_form">
-	<div id="sign_up_form">
-	<form>
-		<fieldset>
-  		<label>Username</label>
-  		<input type="text" class="span2" placeholder="Your alias">
-  		<label>Password</label>
-  		<input type="password" class="span2" placeholder="remember this!">
-  		<label>Confirm</label>
-  		<input type="password" class="span2" placeholder="just to make sure...">
-  	</fieldset>
-  	<div class="form-actions">
-  		<button type="submit" class="btn btn-inverse">Create account</button> <em>or <a id="close_signup_form" href="#">close</a></em>
-  	</div>
-	</form>
-	</div>
-</template>
-
-<template name="facebook">
-	<a href="#" id="facebook">Login with Facebook</a>
 </template>
