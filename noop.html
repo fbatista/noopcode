@@ -83,13 +83,8 @@
 		</div>
 		<div class="article_and_comments">
 			<div class="article_body">
-				{{#markdown}}
-					{{#if post_selected}}
-						{{safeBody}}
-					{{else}}
-						{{bodyPreview}} <a href="#" class="brand">&hellip; <i class="icon icon-resize-full"></i></a>
-					{{/if}}
-				{{/markdown}}
+				{{#markdown}}{{#if post_selected}}{{safeBody}}{{else}}{{bodyPreview}} <a href="#" class="brand">&hellip; <i class="icon icon-resize-full"></i></a>
+					{{/if}}{{/markdown}}
 			</div>
 			<div class="comments well">
 				<h4>Comments</h4>
